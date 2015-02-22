@@ -111,10 +111,16 @@
     ```
     pacman -S grub efibootmgr
     ```
-  * Add 'lvm' to GRUB_PRELOAD_MODULES
+  * Open /etc/default/grub
     ```
     nano /etc/default/grub
     ```
+  * Add 'lvm' to GRUB_PRELOAD_MODULES
+  * Uncomment the line: (this helps out with booting LVM snapshots in the future)
+    ```
+    GRUB_DISABLE_LINUX_UUID=true
+    ```
+  * Save & Quit
   * Install GRUB to EFI partition directory
     ```
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub --recheck
