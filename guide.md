@@ -173,6 +173,7 @@
   ```
   shutdown -r now
   ```
+
 ## LVM Snapshots
 Now is a good time to show how to experiment. If you want to install stuff, change stuff, or otherwise break stuff, you can make an LVM snapshot. You can do so for root and boot, but unless you do kernel changes, root is probably enough.
 
