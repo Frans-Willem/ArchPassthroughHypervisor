@@ -173,3 +173,26 @@
   ```
   shutdown -r now
   ```
+## LVM Snapshots
+Now is a good time to show how to experiment. If you want to install stuff, change stuff, or otherwise break stuff, you can make an LVM snapshot. You can do so for root and boot, but unless you do kernel changes, root is probably enough.
+
+Create a snapshot using:
+```
+lvcreate -s --name root-snapshot --size 1GB /dev/vg-Main/root
+```
+This will create a snapshot with a maximum of 1GB of changes (if you change more than that, the snapshot will break and disappear).
+
+If for some reason you break something, you can boot using the ArchLinux Live CD, and type:
+```
+lvconvert --merge /dev/vg-Main/root-snapshot
+```
+(Note that this also removes the snapshot!)
+
+If you're happy with the setup and would like to remove the snapshot, type:
+```
+lvremove /dev/vg-Main/root-snapshot
+```
+
+The same commands can also be used to snapshot boot.
+
+If you have space enough, I recommend making the snapshot size equal to the original volumes size, just to make sure you never run out of space in the snapshot.
