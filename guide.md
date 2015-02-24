@@ -197,3 +197,57 @@ lvremove /dev/vg-Main/root-snapshot
 The same commands can also be used to snapshot boot.
 
 If you have space enough, I recommend making the snapshot size equal to the original volumes size, just to make sure you never run out of space in the snapshot.
+
+## Yaourt
+
+To be able to get packages from the ArchLinux User Repository (AUR), it's easiest to install Yaourt. First, as root, install wget:
+```
+pacman -S wget
+```
+Then, as your normal user, run the following commands:
+```
+mkdir yaourt
+cd yaourt
+wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
+wget https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
+tar xvf package-query.tar.gz
+tar xvf yaourt.tar.gz
+cd package-query
+makepkg -si
+cd ../yaourt
+makepkg -si
+```
+## Getting the VGA devices ready
+
+We should make sure that no drivers are loaded for the devices we'd like to pass through, so we'll force the pci-stub drivers to be loaded for them.
+* Find the PCI-ids (in the form of XXXX:XXXX) and PCI locations (XX:XX.X) for the devices you'd like to pass through.
+  ```
+  lspci -nn | grep NVIDIA
+  ```
+* My output looks like:
+  ```
+  01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GT200b [GeForce GTX 275] [10de:05e6] (rev a1)
+  02:00.0 VGA compatible controller [0300]: NVIDIA Corporation G96 [GeForce 9500 GT] [10de:0640] (rev a1)
+  ```
+* So the PCI-ids for my devices are 10de:05e6 and 10de:0640, and the locations are 01:00.0 and 02:00.0.
+* Add the pci-ids to your GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub: pci-stub.ids=10de:05e6,10de:0640
+* Create the new grub config:
+  ```
+  grub-mkconfig -o /boot/grub/grub.cfg
+  ```
+
+
+## QEMU & Drivers
+Before we go any further, let's get VGA passthrough working.
+First install QEMU, you can either use the version in the ArchLinux repository:
+```
+pacman -S qemu
+```
+Or you can get the absolute latest version from AUR: (this is what I did).
+```
+yaourt -Q qemu-git
+```
+## Kernel patches for Intel Integrated Graphics
+https://aur.archlinux.org/packages/linux-vfio/
+
+## Sound
