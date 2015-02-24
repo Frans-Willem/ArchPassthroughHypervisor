@@ -370,6 +370,8 @@ I'll be going with 3.19 using github:
   pacman -U linux-vfio-headers-3.19-1-x86_64.pkg.tar.xz 
   pacman -U linux-vfio-docs-3.19-1-x86_64.pkg.tar.xz 
   ```
+* Add ```i915.enable_hd_vgaarb=1``` to ```GRUB_CMDLINE_LINUX_DEFAULT``` in ```/etc/default/grub```
+* Recreate grub config: ```grub-mkconfig -o /boot/grub/grub.cfg```
   
 
 ## Sound
