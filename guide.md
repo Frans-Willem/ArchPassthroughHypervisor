@@ -241,7 +241,24 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
     ```
     mkinitcpio -p linux
     ```
-
+* Reboot
+  ```
+  shutdown -r now
+  ```
+* Check which devices are claimed by pci-stub
+  ```
+  dmesg | grep pci-stub
+  ```
+* You should make sure you can find lines like this for all your devices:
+  ```
+  [    0.605687] pci-stub: add 10DE:0640 sub=FFFFFFFF:FFFFFFFF cls=00000000/00000000
+  [    0.605690] pci-stub 0000:02:00.0: claimed by stub
+  ```
+* Optionally add 'nouveau' and/or 'radeon' to the modules blacklist (prevent them from ever getting loaded)
+  ```
+  echo "blacklist radeon" >> /etc/modprobe.d/blacklist.conf 
+  echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf 
+  ```
 
 ## QEMU & Drivers
 Before we go any further, let's get VGA passthrough working.
