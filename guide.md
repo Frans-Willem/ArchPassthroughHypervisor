@@ -372,6 +372,12 @@ I'll be going with 3.19 using github:
   ```
 * Add ```i915.enable_hd_vgaarb=1``` to ```GRUB_CMDLINE_LINUX_DEFAULT``` in ```/etc/default/grub```
 * Recreate grub config: ```grub-mkconfig -o /boot/grub/grub.cfg```
-  
+* Reboot ```shutdown -r now```
+* Check:
+  ```
+  qemu-system-x86_64 -enable-kvm -m 1024 -cpu host -smp 1,sockets=1,cores=1,threads=1 -vga none -device vfio-pci,host=01:00.0,multifunction=on,x-vga=on
+  ```
 
-## Sound
+We'll get back to QEMU later on, for now let's be happy that it works :)
+
+(Continued in guide2.md)
