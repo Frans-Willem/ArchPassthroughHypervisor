@@ -365,7 +365,11 @@ I'll be going with 3.19 using github:
   makepkg -s
   ```
 * Install (Deliberately seperate as it takes too long and the sudo prompt will time-out):
-* 
+  ```
+  pacman -U linux-vfio-3.19-1-x86_64.pkg.tar.xz 
+  pacman -U linux-vfio-headers-3.19-1-x86_64.pkg.tar.xz 
+  pacman -U linux-vfio-docs-3.19-1-x86_64.pkg.tar.xz 
+  ```
   
 
 ## Sound
