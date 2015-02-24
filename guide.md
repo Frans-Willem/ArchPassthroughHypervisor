@@ -312,6 +312,8 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
    ```
 * Start and enable the service:
   ```
+  systemctl enable vfio-bind.service
+  systemctl start vfio-bind.service
   ```
 
 ## QEMU & Drivers
