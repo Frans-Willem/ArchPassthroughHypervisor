@@ -217,7 +217,7 @@ makepkg -si
 cd ../yaourt
 makepkg -si
 ```
-## Getting the VGA devices ready
+## Getting the PCI devices ready for passthrough
 
 We should make sure that no drivers are loaded for the devices we'd like to pass through, so we'll force the pci-stub drivers to be loaded for them.
 * Find the PCI-ids (in the form of XXXX:XXXX) and PCI locations (XX:XX.X) for the devices you'd like to pass through.
@@ -259,6 +259,35 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
   echo "blacklist radeon" >> /etc/modprobe.d/blacklist.conf 
   echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf 
   ```
+* Create a file named ```/usr/bin/vfio-bind``` with the following contents:
+  ```
+  #!/bin/bash
+
+  modprobe vfio-pci
+
+  for dev in "$@"; do
+          vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
+          device=$(cat /sys/bus/pci/devices/$dev/device)
+          if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+                  echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
+          fi
+          echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id
+  done
+  ```
+* Make it executable:
+  ```
+  chmod 755 /usr/bin/vfio-bind
+  ```
+* Try to bind a device: (prepend the device with 0000:)
+  ```
+  vfio-bind 0000:01:00.0
+  ```
+* Look in ```dmesg | grep vfio-pci```. If it failed, you might need to double-check VT-d support:
+  * Go into the BIOS/UEFI, and check it is enabled.
+  * Add intel_iommu=on to GRUB_CMDLINE_LINUX_DEFAULT in ```/etc/default/grub```
+  * Recreate the grub config file: ```grub-mkconfig -o /boot/grub/grub.cfg```
+
+## 
 
 ## QEMU & Drivers
 Before we go any further, let's get VGA passthrough working.
