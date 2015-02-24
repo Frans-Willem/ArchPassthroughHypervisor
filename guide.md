@@ -286,6 +286,9 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
   * Go into the BIOS/UEFI, and check it is enabled.
   * Add intel_iommu=on to GRUB_CMDLINE_LINUX_DEFAULT in ```/etc/default/grub```
   * Recreate the grub config file: ```grub-mkconfig -o /boot/grub/grub.cfg```
+  * Reboot ```shutdown -r now```
+  * Try again ``` vfio-bind 0000:01:00.0```
+  * Check again ```dmesg | grep vfio-pci```
 
 ## 
 
