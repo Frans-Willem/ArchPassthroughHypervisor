@@ -235,6 +235,12 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
   ```
   grub-mkconfig -o /boot/grub/grub.cfg
   ```
+* Make sure pci-stub is added to the initramfs:
+  * Edit /etc/mkinitcpio.conf and add pci-stub to the MODULES option
+  * Recreate the initramfs
+    ```
+    mkinitcpio -p linux
+    ```
 
 
 ## QEMU & Drivers
