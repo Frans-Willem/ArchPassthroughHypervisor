@@ -355,6 +355,10 @@ I'll be going with 3.19 using github:
   ```
   git clone https://github.com/zman0900/linux-vfio-aur.git
   ```
+* Get the linux public key:
+  ```
+  gpg --keyserver pgp.mit.edu --recv-keys 79BE3E4300411886
+  ```
 * Make:
   ```
   cd linux-vfio-aur
