@@ -282,15 +282,37 @@ We should make sure that no drivers are loaded for the devices we'd like to pass
   ```
   vfio-bind 0000:01:00.0
   ```
-* Look in ```dmesg | grep vfio-pci```. If it failed, you might need to double-check VT-d support:
+* Look in ```dmesg```. If vfio-pci failed, you might need to double-check VT-d support:
+  * If it failed, there will be a message with vfio-pci, if it succeeded, it'll just say 'VFIO - User Level meta-driver version: 0.3'
   * Go into the BIOS/UEFI, and check it is enabled.
   * Add intel_iommu=on to GRUB_CMDLINE_LINUX_DEFAULT in ```/etc/default/grub```
   * Recreate the grub config file: ```grub-mkconfig -o /boot/grub/grub.cfg```
   * Reboot ```shutdown -r now```
   * Try again ``` vfio-bind 0000:01:00.0```
-  * Check again ```dmesg | grep vfio-pci```
-
-## 
+  * Check again ```dmesg```
+  * If it still doesn't work, try and find other instructions for your motherboard before going on with this guide.
+* Create a system.d service, ```/usr/lib/systemd/system/vfio-bind.service``` with the following contents:
+  ```
+  [Unit]
+  Description=Binds devices to vfio-pci
+  After=syslog.target
+  
+  [Service]
+  EnvironmentFile=-/etc/vfio-pci.cfg
+  Type=oneshot
+  RemainAfterExit=yes
+  ExecStart=-/usr/bin/vfio-bind $DEVICES
+  
+  [Install]
+  WantedBy=multi-user.target
+  ```
+* Create a config file for the systemd service in  ```/etc/vfio-pci.cfg```:
+   ```
+   DEVICES="0000:01:00.0 0000:02:00.0"
+   ```
+* Start and enable the service:
+  ```
+  ```
 
 ## QEMU & Drivers
 Before we go any further, let's get VGA passthrough working.
@@ -302,6 +324,13 @@ Or you can get the absolute latest version from AUR: (this is what I did).
 ```
 yaourt -Q qemu-git
 ```
+We can check if QEMU is working with KVM using the following command line (as root):
+```
+qemu-system-x86_64 -enable-kvm -m 1024 -cpu host -smp 1,sockets=1,cores=1,threads=1
+```
+
+This should open a window with a fake BIOS starting up complaining that it can't boot from CD or boot disk. If not, check if VT-x is enabled in your BIOS, and troubleshoot linux KVM. This means that at least QEMU is working.
+
 ## Kernel patches for Intel Integrated Graphics
 https://aur.archlinux.org/packages/linux-vfio/
 
