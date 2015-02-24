@@ -333,7 +333,27 @@ qemu-system-x86_64 -enable-kvm -m 1024 -cpu host -smp 1,sockets=1,cores=1,thread
 
 This should open a window with a fake BIOS starting up complaining that it can't boot from CD or boot disk. If not, check if VT-x is enabled in your BIOS, and troubleshoot linux KVM. This means that at least QEMU is working.
 
-## Kernel patches for Intel Integrated Graphics
-https://aur.archlinux.org/packages/linux-vfio/
+Next let's try one of the VGA devices:
+```
+qemu-system-x86_64 -enable-kvm -m 1024 -cpu host -smp 1,sockets=1,cores=1,threads=1 -vga none -device vfio-pci,host=01:00.0,multifunction=on,x-vga=on
+```
+Now you should see both a QEMU window with a monitoring console, and the screen on your pass-through device should start the BIOS output you've seen earlier. If you get this, you can skip the next step. If not, and you have intel integrated graphics, follow the next part. If you don't get the BIOS on the screen, and don't have intel integrated graphics, you should try to find other guides for your specific setup...
+
+## (optional) Kernel patches for Intel Integrated Graphics
+If you didn't get a BIOS screen, you need some patches to your integrated graphics drivers.
+The patches in questions:
+* ICS 915: https://lkml.org/lkml/2014/5/9/517
+* ACS override: https://lkml.org/lkml/2013/5/30/513 (not sure if this is needed, but everyone includes it)
+
+You can either manually compile your kernel, or install one of the following:
+* 3.18.5 with patches, manual installation: https://drive.google.com/open?id=0Bxp_MsrVrNnEbU5tWkY4cldzM0E&authuser=0
+* 3.18.6 in AUR: https://aur.archlinux.org/packages/linux-vfio/
+
+I'll be going with 3.18.6 using AUR:
+* Install the kernel:
+  ```
+  yaourt -S linux-vfio
+  ```
+  
 
 ## Sound
