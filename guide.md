@@ -348,12 +348,20 @@ The patches in questions:
 You can either manually compile your kernel, or install one of the following:
 * 3.18.5 with patches, manual installation: https://drive.google.com/open?id=0Bxp_MsrVrNnEbU5tWkY4cldzM0E&authuser=0
 * 3.18.6 in AUR: https://aur.archlinux.org/packages/linux-vfio/
+* 3.19 on github: https://github.com/zman0900/linux-vfio-aur
 
-I'll be going with 3.18.6 using AUR:
-* Install the kernel:
+I'll be going with 3.19 using github:
+* Get the PKGBUILD stuff:
   ```
-  yaourt -S linux-vfio
+  git clone https://github.com/zman0900/linux-vfio-aur.git
   ```
+* Make:
+  ```
+  cd linux-vfio-aur
+  makepkg -s
+  ```
+* Install (Deliberately seperate as it takes too long and the sudo prompt will time-out):
+* 
   
 
 ## Sound
